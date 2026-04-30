@@ -31,12 +31,16 @@ When performing a long task involving Browser Subagent:
 
 **Right after** the Browser Subagent returns (every single time), you MUST:
 
-1. **Compress recordings** — Find all `.webp` video files in the artifacts directory and compress/archive them so context is preserved but disk space is freed:
+> **IMPORTANT**: The `<conversation_dir>` is the **current conversation's** brain directory:
+> `~/.gemini/antigravity/brain/<current-conversation-id>/`
+> You can find the conversation ID from the `Conversation ID` in the user metadata.
+
+1. **Delete recordings** — Remove all `.webp` video files in the **current conversation** directory. The text summary (Rule 3) replaces the video as context memory:
    ```bash
-   # Find and compress browser recordings
-   find <artifacts_dir> -name "*.webp" -newer /tmp/.last_browser_cleanup 2>/dev/null | \
-     xargs -r -I{} sh -c 'gzip -f "{}" && echo "Compressed: {}"'
-   touch /tmp/.last_browser_cleanup
+   # Delete browser recordings in CURRENT conversation
+   find <conversation_dir> -name "*.webp" -delete 2>/dev/null
+   # Also delete any previously gzipped recordings
+   find <conversation_dir> -name "*.webp.gz" -delete 2>/dev/null
    ```
 
 2. **Kill orphan Chromium processes** — Prevent zombie processes:
@@ -45,12 +49,17 @@ When performing a long task involving Browser Subagent:
    pkill -f "chrome.*--automation" 2>/dev/null || true
    ```
 
-3. **Clean screenshot artifacts** — Remove PNG screenshots that are no longer needed:
+3. **Clean screenshot artifacts** — Remove PNGs including temp media and click feedback:
    ```bash
-   find <artifacts_dir> -name "*.png" -mmin +30 -delete 2>/dev/null || true
+   # Clean main screenshots older than 10 minutes
+   find <conversation_dir> -name "*.png" -mmin +10 -delete 2>/dev/null || true
+   # Clean .tempmediaStorage (browser DOM snapshots)
+   rm -rf <conversation_dir>/.tempmediaStorage/*.png 2>/dev/null || true
+   # Clean click_feedback images
+   rm -rf <conversation_dir>/.system_generated/click_feedback/*.png 2>/dev/null || true
    ```
 
-> **Order matters**: Compress FIRST (preserve context), then kill processes, then clean screenshots.
+> **Order matters**: Summarize FIRST (Rule 3), then delete recordings, kill processes, then clean screenshots.
 
 ### Rule 3: Context Preservation via Summary
 
@@ -72,24 +81,32 @@ Before launching Browser Subagent on a machine with limited resources:
 
 ## 🧹 Cleanup Script Reference
 
-When heavy cleanup is needed, run these commands:
+When heavy cleanup is needed, run these commands.
 
+**Per-conversation cleanup** (replace `CONV_ID` with actual conversation ID):
 ```bash
+CONV_DIR=~/.gemini/antigravity/brain/CONV_ID
+
 # 1. Kill all Chromium/Chrome zombie processes
 pkill -9 -f "chromium" 2>/dev/null || true
 pkill -9 -f "chrome.*remote-debugging" 2>/dev/null || true
 
-# 2. Compress all .webp recordings in artifacts
-find ~/.gemini/antigravity -name "*.webp" -exec gzip -f {} \; 2>/dev/null
+# 2. Delete all .webp recordings and .webp.gz in current conversation
+find "$CONV_DIR" -name "*.webp" -delete 2>/dev/null
+find "$CONV_DIR" -name "*.webp.gz" -delete 2>/dev/null
 
-# 3. Remove old screenshots (older than 1 hour)
-find ~/.gemini/antigravity -name "*.png" -mmin +60 -delete 2>/dev/null
+# 3. Remove ALL screenshots (PNGs) in current conversation
+find "$CONV_DIR" -name "*.png" -delete 2>/dev/null
 
-# 4. Clear Playwright/Chrome cache
+# 4. Clean temp media and click feedback
+rm -rf "$CONV_DIR"/.tempmediaStorage 2>/dev/null
+rm -rf "$CONV_DIR"/.system_generated/click_feedback 2>/dev/null
+
+# 5. Clear Playwright/Chrome cache
 rm -rf ~/.cache/ms-playwright/chromium-*/Cache 2>/dev/null
 rm -rf /tmp/.org.chromium.Chromium.* 2>/dev/null
 
-# 5. Report freed space
+# 6. Report freed space
 echo "Cleanup complete. Current disk usage:"
 du -sh ~/.gemini/antigravity 2>/dev/null || echo "N/A"
 ```
@@ -101,6 +118,7 @@ du -sh ~/.gemini/antigravity 2>/dev/null || echo "N/A"
 ```
 Before browser:  ✅ Check RAM > 2GB, Disk > 5GB
 During browser:  ✅ Max 10 steps per milestone
-After browser:   ✅ Compress .webp → Kill zombies → Clean .png → Summarize
+After browser:   ✅ Summarize → Delete .webp → Kill zombies → Clean .png + temp media
 Long sessions:   ✅ Split into milestones, pause between each
+Scope:           ✅ Always clean CURRENT conversation dir, not global
 ```

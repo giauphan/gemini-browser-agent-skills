@@ -1,7 +1,7 @@
 ---
 skill: browser-heavy-cleanup
 trigger: manual
-description: Aggressive cleanup when disk space is critical. Kills all browser processes, compresses all recordings, purges caches.
+description: Aggressive cleanup when disk space is critical. Kills all browser processes, deletes ALL recordings and screenshots across ALL conversations, purges caches.
 ---
 
 # 🔥 Skill: Browser Heavy Cleanup
@@ -11,6 +11,7 @@ description: Aggressive cleanup when disk space is critical. Kills all browser p
 - User reports slow IDE or crash
 - Before starting a long browser-heavy task
 - Manual trigger: user says "clean browser" or similar
+- Too many files accumulating across conversations
 
 ## Steps
 
@@ -26,22 +27,28 @@ sleep 1
 echo "Remaining chrome processes: $(pgrep -c -f 'chromium|chrome' 2>/dev/null || echo '0')"
 ```
 
-### Step 2: Compress ALL Recordings
+### Step 2: Delete ALL Recordings (All Conversations)
 ```bash
 // turbo
-echo "=== Compressing ALL .webp recordings ==="
+echo "=== Deleting ALL .webp recordings ==="
 BEFORE=$(du -sh ~/.gemini/antigravity 2>/dev/null | cut -f1)
-find ~/.gemini/antigravity -name "*.webp" -exec gzip -f {} \; 2>/dev/null
+find ~/.gemini/antigravity/brain -name "*.webp" -delete 2>/dev/null
+find ~/.gemini/antigravity/brain -name "*.webp.gz" -delete 2>/dev/null
 echo "Before: $BEFORE"
 echo "After:  $(du -sh ~/.gemini/antigravity 2>/dev/null | cut -f1)"
 ```
 
-### Step 3: Remove Old Screenshots
+### Step 3: Remove ALL Screenshots & Temp Media (All Conversations)
 ```bash
 // turbo
-echo "=== Removing ALL old screenshots ==="
-find ~/.gemini/antigravity -name "*.png" -mmin +60 -delete 2>/dev/null
-echo "Done. Remaining PNGs: $(find ~/.gemini/antigravity -name '*.png' 2>/dev/null | wc -l)"
+echo "=== Removing ALL screenshots and temp media ==="
+# Delete all PNGs across all conversations
+find ~/.gemini/antigravity/brain -name "*.png" -delete 2>/dev/null
+# Delete all .tempmediaStorage directories
+find ~/.gemini/antigravity/brain -type d -name ".tempmediaStorage" -exec rm -rf {} + 2>/dev/null
+# Delete all click_feedback directories
+find ~/.gemini/antigravity/brain -type d -name "click_feedback" -exec rm -rf {} + 2>/dev/null
+echo "Done. Remaining PNGs: $(find ~/.gemini/antigravity/brain -name '*.png' 2>/dev/null | wc -l)"
 ```
 
 ### Step 4: Clear Browser Caches
@@ -62,6 +69,8 @@ echo "========================================="
 echo "  🔥 HEAVY CLEANUP COMPLETE"
 echo "========================================="
 echo "Artifacts dir:  $(du -sh ~/.gemini/antigravity 2>/dev/null | cut -f1 || echo 'N/A')"
+echo "Total PNGs:     $(find ~/.gemini/antigravity/brain -name '*.png' 2>/dev/null | wc -l)"
+echo "Total WebPs:    $(find ~/.gemini/antigravity/brain -name '*.webp' 2>/dev/null | wc -l)"
 echo "Chrome procs:   $(pgrep -c -f 'chromium|chrome' 2>/dev/null || echo '0')"
 echo "Available RAM:  $(free -h | awk '/Mem:/ {print $7}')"
 echo "Available Disk: $(df -h . | awk 'NR==2 {print $4}')"
