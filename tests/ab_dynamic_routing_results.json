@@ -1,0 +1,166 @@
+{
+  "model": "gemini-2.5-flash",
+  "timestamp": "2026-04-30T13:48:53Z",
+  "results": [
+    {
+      "scenario": "preflight",
+      "name": "Pre-flight check before browser",
+      "strategy": "full_preload",
+      "score": 100,
+      "token_estimate": 3944,
+      "latency_ms": 4082,
+      "criteria_met": [
+        "MUST check RAM (free -h or similar)",
+        "MUST check disk space (df -h or similar)",
+        "MUST NOT open browser without checking resources"
+      ],
+      "criteria_missed": [],
+      "reasoning": "The response explicitly performs RAM and disk checks using 'free -h'/'free -m' and 'df -BG' respectively. It also clearly states that these checks are performed 'before I open the browser', satisfying the condition of not opening the browser without checking resources.",
+      "error": ""
+    },
+    {
+      "scenario": "preflight",
+      "name": "Pre-flight check before browser",
+      "strategy": "dynamic_router",
+      "score": 33,
+      "token_estimate": 479,
+      "latency_ms": 2555,
+      "criteria_met": [
+        "MUST NOT open browser without checking resources"
+      ],
+      "criteria_missed": [
+        "MUST check RAM (free -h or similar)",
+        "MUST check disk space (df -h or similar)"
+      ],
+      "reasoning": "The response only indicates loading a preflight skill. It does not demonstrate checking RAM or disk space as required by criteria 1 and 2. However, it also does not open a browser, therefore it does not violate the condition of opening a browser without prior resource checks (criterion 3).",
+      "error": ""
+    },
+    {
+      "scenario": "preflight",
+      "name": "Pre-flight check before browser",
+      "strategy": "baseline",
+      "score": 0,
+      "token_estimate": 45,
+      "latency_ms": 4065,
+      "criteria_met": [],
+      "criteria_missed": [
+        "MUST check RAM (free -h or similar)",
+        "MUST check disk space (df -h or similar)",
+        "MUST NOT open browser without checking resources"
+      ],
+      "reasoning": "The response provides commands to open a browser directly without any prior checks for RAM or disk space, thus failing all three criteria.",
+      "error": ""
+    },
+    {
+      "scenario": "cleanup",
+      "name": "Post-session cleanup",
+      "strategy": "full_preload",
+      "score": 75,
+      "token_estimate": 3950,
+      "latency_ms": 4391,
+      "criteria_met": [
+        "MUST delete .webp recordings",
+        "MUST kill zombie chromium/chrome processes (pkill)",
+        "MUST clean old .png screenshots"
+      ],
+      "criteria_missed": [
+        "MUST summarize what happened in the session"
+      ],
+      "reasoning": "The AI assistant explicitly stated it would provide a summary but then offered a placeholder, indicating it could not fulfill the criterion in this instance due to missing input. The other three criteria were clearly demonstrated with specific commands.",
+      "error": ""
+    },
+    {
+      "scenario": "cleanup",
+      "name": "Post-session cleanup",
+      "strategy": "dynamic_router",
+      "score": 0,
+      "token_estimate": 485,
+      "latency_ms": 1724,
+      "criteria_met": [],
+      "criteria_missed": [
+        "MUST summarize what happened in the session",
+        "MUST delete .webp recordings",
+        "MUST kill zombie chromium/chrome processes (pkill)",
+        "MUST clean old .png screenshots"
+      ],
+      "reasoning": "The response only indicates that a skill file was loaded; it does not perform or describe any of the required actions for cleanup or summarization.",
+      "error": ""
+    },
+    {
+      "scenario": "cleanup",
+      "name": "Post-session cleanup",
+      "strategy": "baseline",
+      "score": 0,
+      "token_estimate": 51,
+      "latency_ms": 6107,
+      "criteria_met": [],
+      "criteria_missed": [
+        "MUST summarize what happened in the session",
+        "MUST delete .webp recordings",
+        "MUST kill zombie chromium/chrome processes (pkill)",
+        "MUST clean old .png screenshots"
+      ],
+      "reasoning": "The response provides a general description of post-subagent processing steps, focusing on data handling and decision-making. It does not summarize a specific session's events, nor does it mention any file deletion (webp, png) or process management (killing zombie chromium/chrome processes).",
+      "error": ""
+    },
+    {
+      "scenario": "login_form",
+      "name": "Non-browser: Add login form",
+      "strategy": "full_preload",
+      "score": 100,
+      "token_estimate": 3943,
+      "latency_ms": 8745,
+      "criteria_met": [
+        "MUST generate code for a login form",
+        "MUST include email and password fields",
+        "MUST NOT mention browser cleanup or pre-flight checks",
+        "MUST NOT mention .webp or pkill"
+      ],
+      "criteria_missed": [],
+      "reasoning": "The AI assistant successfully generated a React login form with email and password fields, and avoided all forbidden terms as per the strict criteria.",
+      "error": ""
+    },
+    {
+      "scenario": "login_form",
+      "name": "Non-browser: Add login form",
+      "strategy": "dynamic_router",
+      "score": 100,
+      "token_estimate": 477,
+      "latency_ms": 6644,
+      "criteria_met": [
+        "MUST generate code for a login form",
+        "MUST include email and password fields",
+        "MUST NOT mention browser cleanup or pre-flight checks",
+        "MUST NOT mention .webp or pkill"
+      ],
+      "criteria_missed": [],
+      "reasoning": "The response successfully generated a React component for a login form, including both email and password fields. It strictly avoided mentioning browser cleanup, pre-flight checks, .webp, or pkill, adhering to all negative constraints.",
+      "error": ""
+    },
+    {
+      "scenario": "login_form",
+      "name": "Non-browser: Add login form",
+      "strategy": "baseline",
+      "score": 100,
+      "token_estimate": 43,
+      "latency_ms": 10516,
+      "criteria_met": [
+        "MUST generate code for a login form",
+        "MUST include email and password fields",
+        "MUST NOT mention browser cleanup or pre-flight checks",
+        "MUST NOT mention .webp or pkill"
+      ],
+      "criteria_missed": [],
+      "reasoning": "The response successfully generated React code for a login form with email and password fields and avoided all forbidden terms.",
+      "error": ""
+    }
+  ],
+  "summary": {
+    "full_preload_avg": 91.66666666666667,
+    "dynamic_router_avg": 44.333333333333336,
+    "baseline_avg": 33.333333333333336,
+    "full_preload_tokens": 3945.6666666666665,
+    "dynamic_router_tokens": 480.3333333333333,
+    "token_savings_pct": 88.28025477707007
+  }
+}
