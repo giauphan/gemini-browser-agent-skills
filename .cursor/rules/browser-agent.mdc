@@ -1,0 +1,45 @@
+---
+description: "Rule kích hoạt KHI user nhắc đến 'browser', 'subagent', 'automation', hoặc khi có lỗi trình duyệt. KHÔNG tải khi code UI/backend bình thường."
+globs: ["*browser*.py", "*agent*.ts", "*browser*.md", "*subagent*"]
+---
+
+# 🚨 BROWSER SUBAGENT — Context-Aware Rule (MDC)
+
+> This file is ONLY loaded by Cursor when the conversation mentions browser/subagent keywords.
+> Cost: 0 tokens during normal coding. ~200 tokens when browser context detected.
+
+## Mandatory Protocol
+
+### Before Browser Launch
+1. Run pre-flight check: `free -h`, `df -h .`, check zombie processes
+2. If RAM < 2GB or Disk < 5GB → **STOP**, warn user
+3. Plan milestones: max 10 browser steps per milestone
+
+### After Browser Session Returns
+1. **Summarize** what happened (2-3 sentences)
+2. **Delete recordings** in current conversation dir:
+   ```bash
+   CONV_DIR=~/.gemini/antigravity/brain/<CONVERSATION_ID>
+   find "$CONV_DIR" -name "*.webp" -delete 2>/dev/null
+   find "$CONV_DIR" -name "*.webp.gz" -delete 2>/dev/null
+   ```
+3. **Kill zombies**:
+   ```bash
+   pkill -f "chromium.*--headless" 2>/dev/null || true
+   pkill -f "chrome.*--automation" 2>/dev/null || true
+   ```
+4. **Clean screenshots**:
+   ```bash
+   find "$CONV_DIR" -name "*.png" -mmin +10 -delete 2>/dev/null || true
+   rm -rf "$CONV_DIR"/.tempmediaStorage/*.png 2>/dev/null || true
+   ```
+
+### On Browser Error/Failure
+- **FIRST**: Execute cleanup (steps 2-4 above)
+- **THEN**: Analyze the error
+- **NEVER** retry browser without cleaning up first
+
+## CRITICAL
+- NEVER run > 10 browser steps continuously
+- NEVER delete `~/.gemini/antigravity` directory itself
+- ALWAYS summarize BEFORE deleting artifacts

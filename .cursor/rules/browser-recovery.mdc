@@ -1,0 +1,46 @@
+---
+description: "Quy tắc clean up tự động khi gặp lỗi liên quan browser. Kích hoạt khi user nói 'clean', 'cleanup', 'dọn dẹp', hoặc disk > 10GB."
+globs: ["*cleanup*", "*clean*"]
+---
+
+# 🔥 BROWSER RECOVERY — Auto-Cleanup Protocol (MDC)
+
+> Loaded automatically when Cursor detects cleanup-related context.
+
+## Immediate Actions (In This Order)
+
+### 1. Kill ALL Browser Processes
+```bash
+pkill -9 -f "chromium" 2>/dev/null || true
+pkill -9 -f "chrome.*remote-debugging" 2>/dev/null || true
+pkill -9 -f "chrome.*--automation" 2>/dev/null || true
+sleep 1
+```
+
+### 2. Delete ALL Recordings (Current Conversation)
+```bash
+CONV_DIR=~/.gemini/antigravity/brain/<CONVERSATION_ID>
+find "$CONV_DIR" -name "*.webp" -delete 2>/dev/null
+find "$CONV_DIR" -name "*.webp.gz" -delete 2>/dev/null
+```
+
+### 3. Clean Screenshots & Temp Media
+```bash
+CONV_DIR=~/.gemini/antigravity/brain/<CONVERSATION_ID>
+find "$CONV_DIR" -name "*.png" -delete 2>/dev/null
+rm -rf "$CONV_DIR"/.tempmediaStorage 2>/dev/null
+rm -rf "$CONV_DIR"/.system_generated/click_feedback 2>/dev/null
+```
+
+### 4. Clear Browser Caches
+```bash
+rm -rf ~/.cache/ms-playwright/chromium-*/Cache 2>/dev/null
+rm -rf /tmp/.org.chromium.Chromium.* 2>/dev/null
+```
+
+### 5. Report
+```bash
+echo "Artifacts dir: $(du -sh ~/.gemini/antigravity 2>/dev/null | cut -f1)"
+echo "Chrome procs: $(pgrep -c -f 'chromium|chrome' 2>/dev/null || echo '0')"
+echo "Available RAM: $(free -h | awk '/Mem:/ {print $7}')"
+```
