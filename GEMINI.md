@@ -34,6 +34,7 @@ Do NOT reference deleted artifacts in future responses.
 Read `SKILLS_ROUTER.md` at conversation start.
 Read `rules/context-router.md` for full routing protocol.
 Re-read every 15 messages.
+Skills are loaded from `skills/*/SKILL.md` on-demand via the routing table.
 
 ## RULES INHERITANCE
 This file extends `AGENTS.md`. All rules in `AGENTS.md` apply here.

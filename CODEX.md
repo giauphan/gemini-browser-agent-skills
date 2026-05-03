@@ -28,7 +28,7 @@ Codex tends to be aggressive with file reads. Enforce compliance:
 
 ### Dynamic Routing
 Read `SKILLS_ROUTER.md` at conversation start.
-Match tasks against routing table before loading skill files.
+Match tasks against routing table before loading `skills/*/SKILL.md` files.
 
 ## RULES INHERITANCE
 This file extends `AGENTS.md`. All rules in `AGENTS.md` apply here.

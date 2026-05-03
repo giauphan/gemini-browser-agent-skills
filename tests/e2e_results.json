@@ -1,0 +1,654 @@
+{
+  "timestamp": "2026-05-03T13:16:34.818667",
+  "tests": [
+    {
+      "name": "Skills use subdirectory pattern",
+      "category": "structural",
+      "status": "PASS",
+      "details": "Found 3 skill directories: ['browser-cleanup', 'browser-preflight', 'browser-heavy-cleanup']",
+      "points": 3,
+      "max_points": 3
+    },
+    {
+      "name": "  browser-cleanup/SKILL.md exists",
+      "category": "structural",
+      "status": "PASS",
+      "details": "",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-preflight/SKILL.md exists",
+      "category": "structural",
+      "status": "PASS",
+      "details": "",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-heavy-cleanup/SKILL.md exists",
+      "category": "structural",
+      "status": "PASS",
+      "details": "",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "No flat .md files in skills/ root",
+      "category": "structural",
+      "status": "PASS",
+      "details": "Clean",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "SKILLS_ROUTER.md exists",
+      "category": "structural",
+      "status": "PASS",
+      "details": "",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "rules/ directory exists",
+      "category": "structural",
+      "status": "PASS",
+      "details": "",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "browser-cleanup: has YAML frontmatter",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "Valid YAML frontmatter",
+      "points": 3,
+      "max_points": 3
+    },
+    {
+      "name": "  browser-cleanup: has 'name'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "value: browser-cleanup...",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-cleanup: has 'description'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "value: Clean up browser artifacts, kill zombie processes, and free ...",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-cleanup: has 'license'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "value: MIT...",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-cleanup: has 'allowed-tools'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "value: Bash...",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-cleanup: has 'compatibility'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "present",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "  browser-cleanup: has 'metadata'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "present",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "  browser-cleanup: description quality",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "Length: 218 chars (min 50)",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-cleanup: name matches dir",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "name='browser-cleanup', dir='browser-cleanup'",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "browser-preflight: has YAML frontmatter",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "Valid YAML frontmatter",
+      "points": 3,
+      "max_points": 3
+    },
+    {
+      "name": "  browser-preflight: has 'name'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "value: browser-preflight...",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-preflight: has 'description'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "value: Pre-flight resource check before launching Browser Subagent....",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-preflight: has 'license'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "value: MIT...",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-preflight: has 'allowed-tools'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "value: Bash...",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-preflight: has 'compatibility'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "present",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "  browser-preflight: has 'metadata'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "present",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "  browser-preflight: description quality",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "Length: 264 chars (min 50)",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-preflight: name matches dir",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "name='browser-preflight', dir='browser-preflight'",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "browser-heavy-cleanup: has YAML frontmatter",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "Valid YAML frontmatter",
+      "points": 3,
+      "max_points": 3
+    },
+    {
+      "name": "  browser-heavy-cleanup: has 'name'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "value: browser-heavy-cleanup...",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-heavy-cleanup: has 'description'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "value: Aggressive cleanup when disk space is critical. Use when dis...",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-heavy-cleanup: has 'license'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "value: MIT...",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-heavy-cleanup: has 'allowed-tools'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "value: Bash...",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-heavy-cleanup: has 'compatibility'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "present",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "  browser-heavy-cleanup: has 'metadata'",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "present",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "  browser-heavy-cleanup: description quality",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "Length: 325 chars (min 50)",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "  browser-heavy-cleanup: name matches dir",
+      "category": "frontmatter",
+      "status": "PASS",
+      "details": "name='browser-heavy-cleanup', dir='browser-heavy-cleanup'",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "browser-cleanup: under 500 lines",
+      "category": "body",
+      "status": "PASS",
+      "details": "65 lines",
+      "points": 3,
+      "max_points": 3
+    },
+    {
+      "name": "browser-cleanup: has H1 heading",
+      "category": "body",
+      "status": "PASS",
+      "details": "",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "browser-cleanup: has code blocks",
+      "category": "body",
+      "status": "PASS",
+      "details": "Contains executable instructions",
+      "points": 3,
+      "max_points": 3
+    },
+    {
+      "name": "browser-cleanup: has step-by-step structure",
+      "category": "body",
+      "status": "PASS",
+      "details": "Structured with numbered steps",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "browser-cleanup: why-over-MUST ratio",
+      "category": "body",
+      "status": "PASS",
+      "details": "0 directives, 0 explanations (ratio: 0.0)",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "browser-preflight: under 500 lines",
+      "category": "body",
+      "status": "PASS",
+      "details": "53 lines",
+      "points": 3,
+      "max_points": 3
+    },
+    {
+      "name": "browser-preflight: has H1 heading",
+      "category": "body",
+      "status": "PASS",
+      "details": "",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "browser-preflight: has code blocks",
+      "category": "body",
+      "status": "PASS",
+      "details": "Contains executable instructions",
+      "points": 3,
+      "max_points": 3
+    },
+    {
+      "name": "browser-preflight: has step-by-step structure",
+      "category": "body",
+      "status": "PASS",
+      "details": "Structured with numbered steps",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "browser-preflight: why-over-MUST ratio",
+      "category": "body",
+      "status": "PASS",
+      "details": "0 directives, 0 explanations (ratio: 0.0)",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "browser-heavy-cleanup: under 500 lines",
+      "category": "body",
+      "status": "PASS",
+      "details": "71 lines",
+      "points": 3,
+      "max_points": 3
+    },
+    {
+      "name": "browser-heavy-cleanup: has H1 heading",
+      "category": "body",
+      "status": "PASS",
+      "details": "",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "browser-heavy-cleanup: has code blocks",
+      "category": "body",
+      "status": "PASS",
+      "details": "Contains executable instructions",
+      "points": 3,
+      "max_points": 3
+    },
+    {
+      "name": "browser-heavy-cleanup: has step-by-step structure",
+      "category": "body",
+      "status": "PASS",
+      "details": "Structured with numbered steps",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "browser-heavy-cleanup: why-over-MUST ratio",
+      "category": "body",
+      "status": "PASS",
+      "details": "0 directives, 0 explanations (ratio: 0.0)",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "Router has always_on trigger",
+      "category": "routing",
+      "status": "PASS",
+      "details": "trigger=always_on",
+      "points": 3,
+      "max_points": 3
+    },
+    {
+      "name": "Router references browser-cleanup",
+      "category": "routing",
+      "status": "PASS",
+      "details": "Found: skills/browser-cleanup/SKILL.md",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "Router references browser-preflight",
+      "category": "routing",
+      "status": "PASS",
+      "details": "Found: skills/browser-preflight/SKILL.md",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "Router references browser-heavy-cleanup",
+      "category": "routing",
+      "status": "PASS",
+      "details": "Found: skills/browser-heavy-cleanup/SKILL.md",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "Router has token budget info",
+      "category": "routing",
+      "status": "PASS",
+      "details": "",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "Router has critical rules (always-on)",
+      "category": "routing",
+      "status": "PASS",
+      "details": "",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": "All triggers are unique",
+      "category": "routing",
+      "status": "PASS",
+      "details": "5 unique / 5 total",
+      "points": 2,
+      "max_points": 2
+    },
+    {
+      "name": ".cursorrules: no stale references",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "Clean",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": ".clinerules: no stale references",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "Clean",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": ".windsurfrules: no stale references",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "Clean",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": ".traerules: no stale references",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "Clean",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "copilot-instructions.md: no stale references",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "Clean",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "AGENTS.md: no stale references",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "Clean",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "CLAUDE.md: no stale references",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "Clean",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "GEMINI.md: no stale references",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "Clean",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "CODEX.md: no stale references",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "Clean",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": ".cursorrules: references skills/",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": ".clinerules: references skills/",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": ".windsurfrules: references skills/",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": ".traerules: references skills/",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "copilot-instructions.md: references skills/",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "AGENTS.md: references skills/",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "CLAUDE.md: references skills/",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "GEMINI.md: references skills/",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "CODEX.md: references skills/",
+      "category": "crossref",
+      "status": "PASS",
+      "details": "",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "context-router.md: has frontmatter",
+      "category": "rules",
+      "status": "PASS",
+      "details": "trigger=always_on",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "rule-using-browser.md: has frontmatter",
+      "category": "rules",
+      "status": "PASS",
+      "details": "trigger=on_demand",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "self-check.md: has frontmatter",
+      "category": "rules",
+      "status": "PASS",
+      "details": "trigger=before_action",
+      "points": 1,
+      "max_points": 1
+    },
+    {
+      "name": "self-check: has file reading verification",
+      "category": "rules",
+      "status": "PASS",
+      "details": "'Read X/Y files' pattern found",
+      "points": 3,
+      "max_points": 3
+    },
+    {
+      "name": "context-router: enforces on-demand loading",
+      "category": "rules",
+      "status": "PASS",
+      "details": "",
+      "points": 3,
+      "max_points": 3
+    },
+    {
+      "name": "rule-using-browser: references full lifecycle",
+      "category": "rules",
+      "status": "PASS",
+      "details": "preflight=✅, cleanup=✅",
+      "points": 3,
+      "max_points": 3
+    }
+  ],
+  "summary": {
+    "passed": 80,
+    "failed": 0,
+    "warnings": 0,
+    "total": 80,
+    "score": 100,
+    "total_points": 143,
+    "max_points": 143
+  }
+}
