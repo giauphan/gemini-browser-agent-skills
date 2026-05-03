@@ -4,30 +4,40 @@ priority: critical
 weight: minimal
 ---
 
-# 🧭 SKILLS ROUTER — Dynamic Context Index
+# SKILLS ROUTER — Dynamic Context Index
 
-> **DO NOT** preload all skill/rule files. Use this index to load ONLY what you need, WHEN you need it.
+> Load ONLY what you need, WHEN you need it. NEVER preload all files.
 
 ## Routing Table
 
-| Trigger Condition | Action | File to Read |
-|---|---|---|
-| **BEFORE** launching Browser Subagent | Run pre-flight checks | `skills/browser-preflight.md` |
-| **AFTER** Browser Subagent returns | Run cleanup immediately | `skills/browser-cleanup.md` |
-| Disk > 10GB OR user says "clean browser" | Run nuclear cleanup | `skills/browser-heavy-cleanup.md` |
-| Any browser-related task | Load browser rules | `rules/rule-using-browser.md` |
-| Before writing ANY code | Self-check rules | `rules/self-check.md` |
+| # | Trigger Condition | Load File | Est. Tokens |
+|---|---|---|---|
+| 1 | BEFORE launching Browser Subagent | `skills/browser-preflight/SKILL.md` | ~150 |
+| 2 | AFTER Browser Subagent returns | `skills/browser-cleanup/SKILL.md` | ~200 |
+| 3 | Disk > 10GB OR user says "clean" | `skills/browser-heavy-cleanup/SKILL.md` | ~250 |
+| 4 | Any browser-related task (plan/execute) | `rules/rule-using-browser.md` | ~200 |
+| 5 | Before writing ANY code | `rules/self-check.md` | ~150 |
 
-## How to Use This Router
+## How to Use
 
-1. **Match** the current task against the "Trigger Condition" column above
-2. **Read** the corresponding file using your file-reading tool (e.g., `read_file`, `view_file`, `@filename`)
-3. **Execute** the instructions in that file
-4. If NO condition matches → proceed normally without loading extra context
+1. **Match** current task against Trigger Condition column
+2. **Read** the file using `read_file` / `view_file` / `@filename`
+3. **Execute** instructions in that file
+4. **No match** → proceed normally (0 extra tokens)
 
-## CRITICAL Rules (Always Active — No File Load Needed)
+## CRITICAL Rules (Always Active — No File Load)
 
-- **NEVER** run Browser Subagent for more than 10 steps without pausing
-- **ALWAYS** summarize browser session results BEFORE deleting artifacts
-- **ALWAYS** clean up `.webp` and `.png` files after browser sessions
-- **NEVER** delete the entire `~/.gemini/antigravity` directory
+1. NEVER run Browser Subagent > 10 steps without pausing
+2. ALWAYS summarize browser results BEFORE deleting artifacts
+3. ALWAYS delete `.webp` and `.png` files after browser sessions
+4. NEVER delete the entire `~/.gemini/antigravity` directory
+5. ALWAYS verify file reading count: "Read X/Y files" before proceeding
+6. ALWAYS compress browser context to text summary after cleanup
+
+## Token Budget
+
+| State | Cost |
+|---|---|
+| Idle (no browser) | ~100 tokens (this file only) |
+| Browser task | ~450 tokens (this + preflight + cleanup) |
+| All preloaded (old way) | ~800+ tokens |

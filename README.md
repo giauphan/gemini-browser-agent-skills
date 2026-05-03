@@ -4,7 +4,7 @@
 
 ## ⚠️ The Problem
 
-When using AI agents for long-running tasks, two critical issues emerge:
+When using AI agents for long-running tasks, these critical issues emerge:
 
 | Issue | Root Cause | Impact |
 |---|---|---|
@@ -12,6 +12,7 @@ When using AI agents for long-running tasks, two critical issues emerge:
 | **Disk Bloat (12GB+)** | Auto-recorded `.webp` videos & `.png` screenshots pile up | Disk full |
 | **Context Amnesia** 🧠 | AI "forgets" rules as conversation grows longer | Rule violations, broken code |
 | **Token Waste** 💸 | Loading ALL rules into every message bloats context window | Slow responses, high cost |
+| **File Reading Skips** 📂 | AI reads 1-4 files when asked to read 10 | Incomplete analysis |
 
 ## 💡 The Solution: Dynamic Context Routing
 
@@ -39,38 +40,62 @@ Token Budget Comparison:
 
 ## 📦 Installation
 
-### Quick Setup (Any IDE)
+### One-Command Install (Agent Skills Standard)
+
+```bash
+npx skills add giauphan/gemini-browser-agent-skills
+```
+
+### Claude Code Plugin Marketplace
+
+```bash
+/plugin marketplace add giauphan/gemini-browser-agent-skills
+/plugin install browser-preflight@gemini-browser-agent-skills
+/plugin install browser-cleanup@gemini-browser-agent-skills
+```
+
+### Manual Setup (Any IDE)
 
 ```bash
 # Clone this repo
 git clone https://github.com/giauphan/gemini-browser-agent-skills.git
 
-# Copy everything to your project
-cp -r gemini-browser-agent-skills/skills/ your-project/.agents/skills/
-cp -r gemini-browser-agent-skills/rules/ your-project/.agents/rules/
-cp gemini-browser-agent-skills/SKILLS_ROUTER.md your-project/.agents/SKILLS_ROUTER.md
+# Copy skills & rules to your project
+cp -r gemini-browser-agent-skills/skills/ your-project/skills/
+cp -r gemini-browser-agent-skills/rules/ your-project/rules/
+cp gemini-browser-agent-skills/SKILLS_ROUTER.md your-project/SKILLS_ROUTER.md
 ```
 
 ### IDE-Specific Setup
 
 Copy the rule file for your IDE to your project root:
 
-| IDE | Rule File | Auto-Loaded? |
+| IDE / Tool | Rule File | Auto-Loaded? |
 |---|---|---|
 | **Cursor** | `.cursorrules` + `.cursor/rules/*.mdc` | ✅ Yes |
 | **Windsurf** | `.windsurfrules` | ✅ Yes |
 | **Cline / Roo Code** | `.clinerules` | ✅ Yes |
 | **Trae** | `.traerules` | ✅ Yes |
 | **GitHub Copilot** | `.github/copilot-instructions.md` | ✅ Yes |
-| **Gemini (Antigravity)** | `rules/context-router.md` + `SKILLS_ROUTER.md` | ✅ Yes |
+| **Claude Code / CLI** | `CLAUDE.md` | ✅ Yes |
+| **Gemini CLI** | `GEMINI.md` | ✅ Yes |
+| **Gemini (Antigravity)** | `GEMINI.md` + `rules/context-router.md` | ✅ Yes |
+| **OpenAI Codex** | `CODEX.md` | ✅ Yes |
+| **Any AGENTS.md tool** | `AGENTS.md` (universal) | ✅ Yes |
 
 ```bash
 # Example: Cursor IDE
 cp gemini-browser-agent-skills/.cursorrules your-project/
 cp -r gemini-browser-agent-skills/.cursor/ your-project/.cursor/
 
-# Example: Windsurf
-cp gemini-browser-agent-skills/.windsurfrules your-project/
+# Example: Claude Code / CLI
+cp gemini-browser-agent-skills/CLAUDE.md your-project/
+
+# Example: Gemini CLI / Antigravity
+cp gemini-browser-agent-skills/GEMINI.md your-project/
+
+# Example: OpenAI Codex
+cp gemini-browser-agent-skills/CODEX.md your-project/
 
 # Example: GitHub Copilot
 cp -r gemini-browser-agent-skills/.github/ your-project/.github/
@@ -80,6 +105,10 @@ cp -r gemini-browser-agent-skills/.github/ your-project/.github/
 
 ```
 your-project/
+├── AGENTS.md                       # Universal (30+ tools auto-detect)
+├── CLAUDE.md                       # Claude Code / CLI specific
+├── GEMINI.md                       # Gemini CLI / Antigravity specific
+├── CODEX.md                        # OpenAI Codex specific
 ├── .cursorrules                    # Cursor IDE (lightweight router)
 ├── .windsurfrules                  # Windsurf IDE
 ├── .clinerules                     # Cline / Roo Code
@@ -92,13 +121,18 @@ your-project/
 │       └── browser-recovery.mdc    # Cursor MDC: cleanup on error
 ├── SKILLS_ROUTER.md                # 🧭 Routing table (~50 tokens)
 ├── rules/
-│   ├── rule-using-browser.md       # Full browser rules (loaded on-demand)
-│   ├── context-router.md           # Meta-rule: how to use dynamic routing
+│   ├── rule-using-browser.md       # Browser session rules (on-demand)
+│   ├── context-router.md           # Meta-rule: dynamic routing protocol
 │   └── self-check.md               # Self-verification before coding
+├── .claude-plugin/
+│   └── marketplace.json            # Claude Code plugin manifest (npx skills add)
 ├── skills/
-│   ├── browser-preflight.md        # Pre-flight: RAM, disk, zombie check
-│   ├── browser-cleanup.md          # Post-session: delete, kill, clean
-│   └── browser-heavy-cleanup.md    # Nuclear: purge everything
+│   ├── browser-preflight/
+│   │   └── SKILL.md                # Pre-flight: RAM, disk, zombie check
+│   ├── browser-cleanup/
+│   │   └── SKILL.md                # Post-session: delete, kill, clean
+│   └── browser-heavy-cleanup/
+│       └── SKILL.md                # Nuclear: purge everything
 ├── examples/
 │   └── error_hinting.py            # Zero-token AI hint examples
 └── tests/
@@ -114,9 +148,9 @@ your-project/
 ```markdown
 | Trigger Condition               | Load This File                    |
 |----------------------------------|-----------------------------------|
-| Before launching Browser         | skills/browser-preflight.md       |
-| After Browser returns            | skills/browser-cleanup.md         |
-| Disk > 10GB or "clean browser"   | skills/browser-heavy-cleanup.md   |
+| Before launching Browser         | skills/browser-preflight/SKILL.md       |
+| After Browser returns            | skills/browser-cleanup/SKILL.md         |
+| Disk > 10GB or "clean browser"   | skills/browser-heavy-cleanup/SKILL.md   |
 | Any browser task                 | rules/rule-using-browser.md       |
 ```
 
@@ -130,10 +164,11 @@ Total extra cost: 0 tokens ✅
 ### Flow: Browser Task (loads only what's needed)
 ```
 User: "Test the login page in browser"
-AI: [Checks router] → Match! → read_file("skills/browser-preflight.md")
+AI: [Checks router] → Match! → read_file("skills/browser-preflight/SKILL.md")
 AI: [Runs pre-flight] → RAM OK, Disk OK → Launches browser
-AI: [Browser returns] → read_file("skills/browser-cleanup.md")
-AI: [Runs cleanup] → Done
+AI: [Browser returns] → read_file("skills/browser-cleanup/SKILL.md")
+AI: [Runs cleanup] → Summarize → Delete .webp → Kill zombies
+AI: States "🗜️ Browser context compressed. Key findings: [bullets]"
 Total extra cost: ~300 tokens (vs 800+ if all preloaded) ✅
 ```
 
@@ -168,16 +203,18 @@ See `examples/error_hinting.py` for Python, Bash, and Node.js patterns.
 
 ## ✅ Self-Check Protocol
 
-The `rules/self-check.md` forces AI to prove it remembers rules before writing code:
+The `rules/self-check.md` forces AI to prove it remembers rules and reads all files:
 
 ```
 📋 Active Rules for This Task:
 1. Milestone limit — Max 10 browser steps
 2. Cleanup after session — Delete .webp, kill zombies
 3. Pre-flight check — Verify RAM > 2GB
+
+📂 File Reading: Read 10/10 requested files. Missing: none
 ```
 
-This "Chain-of-Thought Anchoring" technique dramatically reduces rule violations in long conversations.
+This "Chain-of-Thought Anchoring" technique dramatically reduces rule violations and file-skipping in long conversations.
 
 ## 📋 Skills Overview
 
@@ -191,12 +228,39 @@ This "Chain-of-Thought Anchoring" technique dramatically reduces rule violations
 - Delete `.webp` recordings
 - Kill zombie Chromium
 - Clean old `.png` screenshots
+- Compress context: `🗜️ Browser context compressed`
 
 ### 🔥 `browser-heavy-cleanup` — Nuclear Cleanup
 - `pkill -9` ALL Chrome processes
 - Delete ALL recordings + screenshots
 - Purge Playwright caches
 - Full resource report
+
+## 🔗 Related Projects & Resources
+
+### Rule Collections (Multi-IDE)
+| Repo | Description |
+|---|---|
+| [Lay4U/awesome-ai-rules](https://github.com/Lay4U/awesome-ai-rules) | Rules for Cursor, Claude, Copilot, Windsurf, Codex CLI & Gemini CLI |
+| [PatrickJS/awesome-cursorrules](https://github.com/PatrickJS/awesome-cursorrules) | 500+ community-curated `.cursorrules` files |
+| [sanjeed5/awesome-cursor-rules-mdc](https://github.com/sanjeed5/awesome-cursor-rules-mdc) | Curated `.mdc` format rules for Cursor |
+| [philipbankier/awesome-agent-skills](https://github.com/philipbankier/awesome-agent-skills) | Directory of skills, tools, plugins across ALL platforms |
+
+### Memory & Context Management
+| Repo | Description |
+|---|---|
+| [mem0ai/mem0](https://github.com/mem0ai/mem0) | Standalone memory layer (vector + graph + key-value) |
+| [letta-ai/letta](https://github.com/letta-ai/letta) | MemGPT — OS-like context management (RAM/disk paging) |
+| [getzep/zep](https://github.com/getzep/zep) | Temporal knowledge graphs for long-running agents |
+| [ScaleLabs-Dev/CCFlow](https://github.com/ScaleLabs-Dev/CCFlow) | Memory bank + TDD workflow for Claude Code |
+
+### Skills & Standards
+| Repo | Description |
+|---|---|
+| [anthropics/skills](https://github.com/anthropics/skills) | Official Agent Skills spec (SKILL.md) |
+| [agentskills.io](https://agentskills.io) | Cross-platform compatibility spec |
+| [sickn33/antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills) | 900+ installable skills for Antigravity |
+| [tiandee/awesome-skills-hub](https://github.com/tiandee/awesome-skills-hub) | Package manager for AI IDE skills & rules |
 
 ## 🧪 Testing
 
@@ -215,10 +279,11 @@ python tests/benchmark_models.py
 ## 🤝 Contributing
 
 PRs welcome! Especially for:
-- Other AI IDEs (Augment, Aider, etc.)
+- Other AI IDEs (Augment, Aider, Kiro, etc.)
 - Windows/macOS specific cleanup paths
 - New skill categories (database, API, deployment)
 - Better error hinting patterns
+- Memory bank integrations
 
 ## 📄 License
 

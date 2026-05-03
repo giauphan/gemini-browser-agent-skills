@@ -1,20 +1,30 @@
 ---
-skill: browser-preflight
-trigger: before_browser_session
-description: Pre-flight resource check before launching Browser Subagent. Prevents crashes on low-resource machines.
+name: browser-preflight
+description: Pre-flight resource check before launching Browser Subagent. Use when the agent is about to start a browser session, automate a web page, or run any browser_subagent task. Prevents crashes on low-resource machines by checking RAM, disk space, and zombie processes.
+compatibility: "Requires Linux with `free`, `df`, `pgrep`, `pkill` commands. Works on any machine running Gemini CLI, Antigravity, Claude Code, Cursor, or similar AI IDE."
+license: MIT
+allowed-tools: Bash
+metadata:
+  triggers:
+    - before_browser_session
+    - browser_subagent_launch
+  token-cost: ~150
+  openclaw:
+    requires:
+      bins:
+        - free
+        - df
+        - pgrep
+    homepage: https://github.com/giauphan/gemini-browser-agent-skills
 ---
 
-# 🛫 Skill: Browser Pre-Flight Check
+# Browser Pre-Flight Check
 
-## When to Use
-Execute this skill **before every Browser Subagent launch**.
-If checks fail, warn the user and do NOT launch the browser.
+Run this skill **before every Browser Subagent launch**. If any check fails, warn the user and do NOT launch the browser.
 
-## Steps
+## Step 1: Check Available RAM
 
-### Step 1: Check Available RAM
 ```bash
-// turbo
 echo "=== RAM Check ==="
 free -h | grep Mem
 AVAIL_MB=$(free -m | awk '/Mem:/ {print $7}')
@@ -27,23 +37,23 @@ else
 fi
 ```
 
-### Step 2: Check Disk Space
+## Step 2: Check Disk Space
+
 ```bash
-// turbo
 echo "=== Disk Check ==="
 AVAIL_GB=$(df -BG . | awk 'NR==2 {print $4}' | tr -d 'G')
 echo "Available: ${AVAIL_GB}GB"
 if [ "$AVAIL_GB" -lt 5 ]; then
   echo "⛔ WARNING: Less than 5GB disk space. Browser artifacts will fill up fast."
-  echo "ACTION: Run browser-cleanup skill first."
+  echo "ACTION: Run browser-heavy-cleanup skill first."
 else
   echo "✅ Disk OK (>5GB available)"
 fi
 ```
 
-### Step 3: Check Existing Zombie Processes
+## Step 3: Check Existing Zombie Processes
+
 ```bash
-// turbo
 echo "=== Zombie Chrome Check ==="
 CHROME_COUNT=$(pgrep -c -f "chromium|chrome" 2>/dev/null || echo "0")
 echo "Existing chrome processes: $CHROME_COUNT"
@@ -57,6 +67,7 @@ else
 fi
 ```
 
-### Decision
+## Decision
+
 - If ANY check shows ⛔: **DO NOT** launch browser. Warn user.
 - If all checks show ✅: Proceed with browser launch.

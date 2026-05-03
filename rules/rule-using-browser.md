@@ -1,124 +1,38 @@
 ---
-trigger: always_on
+trigger: on_demand
+loaded_by: SKILLS_ROUTER.md
+description: Full browser session management. Only loaded when browser task is triggered — NOT always-on.
 ---
 
-# 🌐 Browser Subagent — Resource Management & Cleanup Rules
+# Browser Subagent — Session Management
 
-## ⚠️ Problem Statement
+## EXECUTION PROTOCOL
 
-Browser Subagent runs an isolated Chromium instance via automation (Playwright-equivalent). During long-running sessions, it causes:
+### Phase 1: Pre-Flight (BEFORE browser launch)
+1. Run `skills/browser-preflight/SKILL.md` checks
+2. If ANY check fails → STOP, warn user
+3. Plan milestones: split task into chunks of **≤ 10 browser steps**
 
-1. **Memory Leaks**: Zombie processes & socket leaks from unreleased file descriptors after DOM reloads
-2. **Context Bloat**: Massive terminal I/O and logs overwhelm the IDE's UI renderer → crash
-3. **Disk Bloat (12GB+)**: Auto-recorded screenshots & video artifacts (`.webp`) accumulate rapidly in the artifacts directory
+### Phase 2: Milestone Execution
+- Execute ≤ 10 browser steps per milestone
+- At milestone end → Browser Subagent MUST return
+- Summarize results → run cleanup → start next milestone
 
----
+### Phase 3: Post-Session (AFTER browser returns)
+Execute `skills/browser-cleanup/SKILL.md` — every time, no exceptions.
 
-## 📏 MANDATORY Rules for Browser Usage
+Order: Summarize → Delete .webp → Kill zombies → Clean .png
 
-### Rule 1: Milestone-Based Execution (Max 10 Steps)
+## CONTEXT COMPRESSION (Post-Browser)
 
-When performing a long task involving Browser Subagent:
+After cleanup completes:
+1. Write 3-5 bullet summary of browser findings
+2. State: `🗜️ Browser context compressed. Artifacts deleted.`
+3. Do NOT reference deleted screenshots/recordings in future responses
+4. Treat the text summary as the ONLY memory of what happened
 
-- **MUST** plan and split into milestones of **≤ 10 browser steps** each
-- **MUST** close/return from Browser Subagent at the end of each milestone
-- **MUST** summarize results before starting the next milestone
-- **NEVER** run browser continuously for more than 10 steps without pausing
-
-> This forces context window cleanup and prevents Chromium memory accumulation.
-
-### Rule 2: Immediate Cleanup After Every Browser Session
-
-**Right after** the Browser Subagent returns (every single time), you MUST:
-
-> **IMPORTANT**: The `<conversation_dir>` is the **current conversation's** brain directory:
-> `~/.gemini/antigravity/brain/<current-conversation-id>/`
-> You can find the conversation ID from the `Conversation ID` in the user metadata.
-
-1. **Delete recordings** — Remove all `.webp` video files in the **current conversation** directory. The text summary (Rule 3) replaces the video as context memory:
-   ```bash
-   # Delete browser recordings in CURRENT conversation
-   find <conversation_dir> -name "*.webp" -delete 2>/dev/null
-   # Also delete any previously gzipped recordings
-   find <conversation_dir> -name "*.webp.gz" -delete 2>/dev/null
-   ```
-
-2. **Kill orphan Chromium processes** — Prevent zombie processes:
-   ```bash
-   pkill -f "chromium.*--headless" 2>/dev/null || true
-   pkill -f "chrome.*--automation" 2>/dev/null || true
-   ```
-
-3. **Clean screenshot artifacts** — Remove PNGs including temp media and click feedback:
-   ```bash
-   # Clean main screenshots older than 10 minutes
-   find <conversation_dir> -name "*.png" -mmin +10 -delete 2>/dev/null || true
-   # Clean .tempmediaStorage (browser DOM snapshots)
-   rm -rf <conversation_dir>/.tempmediaStorage/*.png 2>/dev/null || true
-   # Clean click_feedback images
-   rm -rf <conversation_dir>/.system_generated/click_feedback/*.png 2>/dev/null || true
-   ```
-
-> **Order matters**: Summarize FIRST (Rule 3), then delete recordings, kill processes, then clean screenshots.
-
-### Rule 3: Context Preservation via Summary
-
-Before deleting/compressing any browser artifacts:
-
-- **MUST** write a brief text summary of what was observed/done in the browser session
-- Store this summary in the conversation response (not in a file)
-- This replaces the video recording as the "memory" of what happened
-
-### Rule 4: Pre-Flight Resource Check
-
-Before launching Browser Subagent on a machine with limited resources:
-
-- Check available RAM: `free -h | grep Mem`
-- If available RAM < 2GB, **DO NOT** launch browser — warn the user instead
-- Check disk space: `df -h .` — if < 5GB free, clean up first
-
----
-
-## 🧹 Cleanup Script Reference
-
-When heavy cleanup is needed, run these commands.
-
-**Per-conversation cleanup** (replace `CONV_ID` with actual conversation ID):
-```bash
-CONV_DIR=~/.gemini/antigravity/brain/CONV_ID
-
-# 1. Kill all Chromium/Chrome zombie processes
-pkill -9 -f "chromium" 2>/dev/null || true
-pkill -9 -f "chrome.*remote-debugging" 2>/dev/null || true
-
-# 2. Delete all .webp recordings and .webp.gz in current conversation
-find "$CONV_DIR" -name "*.webp" -delete 2>/dev/null
-find "$CONV_DIR" -name "*.webp.gz" -delete 2>/dev/null
-
-# 3. Remove ALL screenshots (PNGs) in current conversation
-find "$CONV_DIR" -name "*.png" -delete 2>/dev/null
-
-# 4. Clean temp media and click feedback
-rm -rf "$CONV_DIR"/.tempmediaStorage 2>/dev/null
-rm -rf "$CONV_DIR"/.system_generated/click_feedback 2>/dev/null
-
-# 5. Clear Playwright/Chrome cache
-rm -rf ~/.cache/ms-playwright/chromium-*/Cache 2>/dev/null
-rm -rf /tmp/.org.chromium.Chromium.* 2>/dev/null
-
-# 6. Report freed space
-echo "Cleanup complete. Current disk usage:"
-du -sh ~/.gemini/antigravity 2>/dev/null || echo "N/A"
-```
-
----
-
-## 📋 Summary Checklist (Copy-Paste Mental Model)
-
-```
-Before browser:  ✅ Check RAM > 2GB, Disk > 5GB
-During browser:  ✅ Max 10 steps per milestone
-After browser:   ✅ Summarize → Delete .webp → Kill zombies → Clean .png + temp media
-Long sessions:   ✅ Split into milestones, pause between each
-Scope:           ✅ Always clean CURRENT conversation dir, not global
-```
+## CONSTRAINTS
+- NEVER run > 10 browser steps without returning
+- NEVER delete `~/.gemini/antigravity` directory itself
+- NEVER retry browser without cleanup first
+- ALWAYS summarize BEFORE deleting artifacts

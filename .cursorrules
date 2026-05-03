@@ -1,37 +1,40 @@
-# Gemini Browser Agent Skills — IDE Rules
+# Gemini Browser Agent Skills — Cursor IDE
 
-> This file is auto-loaded by Cursor IDE into every conversation's system prompt.
-> It acts as a lightweight router. NEVER preload all skills — load on demand.
+> Auto-loaded by Cursor into system prompt. Lightweight router — ~200 tokens.
+> For Cursor MDC rules, see `.cursor/rules/` (context-aware, loaded by glob match).
 
-## 🧭 SKILLS ROUTER (Dynamic Context)
+## CRITICAL RULES (Memorize — No File Load)
 
-You have access to specialized skills and rules in this project. To save tokens:
-- **DO NOT** preload all skill/rule files
-- **DO** check this routing table before every task
-- **DO** use `read_file` to load the relevant skill ONLY when needed
+1. NEVER run Browser Subagent > 10 steps without pausing
+2. ALWAYS summarize browser results BEFORE deleting artifacts
+3. ALWAYS delete `.webp` recordings after browser sessions
+4. ALWAYS verify file reading: state `"Read X/Y files"` before proceeding
+5. NEVER delete entire `~/.gemini/antigravity` directory
 
-### Routing Table
+## ROUTING TABLE (On-Demand Loading)
 
 | When | Load This File |
 |---|---|
-| Before launching Browser Subagent | `skills/browser-preflight.md` |
-| After Browser Subagent returns | `skills/browser-cleanup.md` |
-| Disk > 10GB or user says "clean" | `skills/browser-heavy-cleanup.md` |
-| Any browser task (planning/executing) | `rules/rule-using-browser.md` |
+| Before browser launch | `skills/browser-preflight/SKILL.md` |
+| After browser returns | `skills/browser-cleanup/SKILL.md` |
+| Disk > 10GB or "clean" | `skills/browser-heavy-cleanup/SKILL.md` |
+| Any browser task | `rules/rule-using-browser.md` |
+| Before writing code | `rules/self-check.md` |
 
-### Always-On Rules (Memorize These — No File Load)
+## SELF-CHECK (Before Every Action)
 
-- NEVER run Browser Subagent > 10 steps without pausing
-- ALWAYS summarize browser results BEFORE deleting artifacts
-- ALWAYS delete `.webp` recordings after browser sessions
-- NEVER delete entire `~/.gemini/antigravity` directory
+```
+📋 Active Rules: [list top 3]
+📂 Files Read: X/Y (Missing: [none | list])
+```
+If files missing → read them NOW.
 
-### Self-Check Protocol
+## CONTEXT COMPRESSION (After Browser)
 
-Before writing code for any task, briefly list the top 3 rules that apply.
-Format: `📋 Active: [rule1], [rule2], [rule3]`
+After cleanup: `🗜️ Browser context compressed. Key findings: [3-5 bullets]`
 
-### Error Recovery
+## ERROR RECOVERY
 
-If terminal output contains `[AI_SYSTEM_HINT]`, follow those instructions immediately.
-If Browser Subagent fails, read `skills/browser-cleanup.md` BEFORE retrying.
+- `[AI_SYSTEM_HINT]` in terminal → follow immediately
+- Browser fails → load `skills/browser-cleanup/SKILL.md` BEFORE retry
+- >15 messages → re-read routing table

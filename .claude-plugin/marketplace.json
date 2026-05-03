@@ -1,0 +1,58 @@
+{
+  "name": "gemini-browser-agent-skills",
+  "owner": {
+    "name": "giauphan",
+    "email": "giauphan@users.noreply.github.com"
+  },
+  "metadata": {
+    "description": "Browser lifecycle management skills — pre-flight checks, post-session cleanup, and heavy cleanup for AI browser agents",
+    "version": "2.0.0"
+  },
+  "plugins": [
+    {
+      "name": "browser-preflight",
+      "source": "./",
+      "description": "Pre-flight resource check before launching Browser Subagent. Use when the agent is about to start a browser session. Checks RAM, disk space, and kills zombie processes to prevent crashes.",
+      "version": "2.0.0",
+      "author": {
+        "name": "giauphan"
+      },
+      "category": "automation",
+      "keywords": ["browser", "preflight", "resource-check", "ram", "disk", "zombie-process"],
+      "strict": false,
+      "skills": [
+        "./skills/browser-preflight"
+      ]
+    },
+    {
+      "name": "browser-cleanup",
+      "source": "./",
+      "description": "Post-session cleanup after Browser Subagent returns. Deletes .webp recordings, kills zombie Chrome processes, cleans screenshots, and compresses context. Use immediately after every browser session.",
+      "version": "2.0.0",
+      "author": {
+        "name": "giauphan"
+      },
+      "category": "automation",
+      "keywords": ["browser", "cleanup", "webp", "chrome", "zombie", "context-compression"],
+      "strict": false,
+      "skills": [
+        "./skills/browser-cleanup"
+      ]
+    },
+    {
+      "name": "browser-heavy-cleanup",
+      "source": "./",
+      "description": "Aggressive cleanup when disk space is critical. Kills ALL browser processes, deletes ALL recordings across ALL conversations, purges caches. Use when disk > 10GB or IDE is slow.",
+      "version": "2.0.0",
+      "author": {
+        "name": "giauphan"
+      },
+      "category": "automation",
+      "keywords": ["browser", "cleanup", "heavy", "disk", "cache", "nuclear"],
+      "strict": false,
+      "skills": [
+        "./skills/browser-heavy-cleanup"
+      ]
+    }
+  ]
+}
