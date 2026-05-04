@@ -67,7 +67,23 @@ else
 fi
 ```
 
+## Step 4: Check Existing Browser Tabs
+
+> If a browser instance is already running, audit open tabs to prevent duplicates.
+
+```bash
+echo "=== Tab Audit ==="
+if pgrep -f "chromium|chrome" > /dev/null 2>&1; then
+  echo "⚠️ Browser already running — existing tabs may be present."
+  echo "ACTION: Include tab management rules in Browser Subagent task prompt."
+  echo "ACTION: Check for duplicate URLs before navigating."
+else
+  echo "✅ No existing browser — clean slate."
+fi
+```
+
 ## Decision
 
 - If ANY check shows ⛔: **DO NOT** launch browser. Warn user.
 - If all checks show ✅: Proceed with browser launch.
+- If browser already running (Step 4 ⚠️): Include tab management instructions from `skills/browser-tab-manager/SKILL.md`.

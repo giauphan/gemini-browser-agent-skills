@@ -8,10 +8,11 @@
 1. **NEVER** preload all skill/rule files — use dynamic routing via `SKILLS_ROUTER.md`
 2. **NEVER** run Browser Subagent > 10 steps without pausing
 3. **ALWAYS** summarize browser results BEFORE deleting artifacts
-4. **ALWAYS** delete `.webp` recordings + `.png` screenshots after browser sessions  
+4. **ALWAYS** delete `.webp` recordings + `.png` screenshots + DOM files after browser sessions  
 5. **ALWAYS** verify file reading count: state `"Read X/Y files"` before proceeding
 6. **NEVER** delete the `~/.gemini/antigravity` directory itself
 7. **ALWAYS** compress browser context to text summary after cleanup
+8. **NEVER** navigate to a URL without reading project routes first — no guessing
 
 ## ROUTING (On-Demand Skill Loading)
 
@@ -20,8 +21,10 @@ Match each task against trigger conditions. Load skills ONLY when triggered.
 
 | Trigger | Action |
 |---|---|
-| Browser task detected | Load `skills/browser-preflight/SKILL.md` → then `rules/rule-using-browser.md` |
-| Browser Subagent returns | Load `skills/browser-cleanup/SKILL.md` → execute immediately |
+| Browser task detected | Load `skills/browser-route-discovery/SKILL.md` → read routes FIRST |
+| Before planning browser steps | Load `skills/browser-preflight/SKILL.md` → then `rules/rule-using-browser.md` |
+| Before navigating to URL | Load `skills/browser-tab-manager/SKILL.md` → check & reuse tabs |
+| Browser Subagent returns | Load `skills/browser-cleanup/SKILL.md` → execute immediately (incl. DOM cleanup) |
 | Disk > 10GB or "clean" requested | Load `skills/browser-heavy-cleanup/SKILL.md` |
 | Before writing code | Load `rules/self-check.md` (verify rule compliance) |
 | Every 15 messages | Re-read `SKILLS_ROUTER.md` to refresh routing |

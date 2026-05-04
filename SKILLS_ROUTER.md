@@ -17,6 +17,8 @@ weight: minimal
 | 3 | Disk > 10GB OR user says "clean" | `skills/browser-heavy-cleanup/SKILL.md` | ~250 |
 | 4 | Any browser-related task (plan/execute) | `rules/rule-using-browser.md` | ~200 |
 | 5 | Before writing ANY code | `rules/self-check.md` | ~150 |
+| 6 | BEFORE navigating to URL OR tab count > 3 | `skills/browser-tab-manager/SKILL.md` | ~180 |
+| 7 | BEFORE planning browser steps (route check) | `skills/browser-route-discovery/SKILL.md` | ~200 |
 
 ## How to Use
 
@@ -29,15 +31,17 @@ weight: minimal
 
 1. NEVER run Browser Subagent > 10 steps without pausing
 2. ALWAYS summarize browser results BEFORE deleting artifacts
-3. ALWAYS delete `.webp` and `.png` files after browser sessions
+3. ALWAYS delete `.webp`, `.png`, and DOM snapshot files after browser sessions
 4. NEVER delete the entire `~/.gemini/antigravity` directory
 5. ALWAYS verify file reading count: "Read X/Y files" before proceeding
 6. ALWAYS compress browser context to text summary after cleanup
+7. NEVER navigate to a URL without reading project routes first — no guessing
+8. ALWAYS clean DOM files after browser session completes
 
 ## Token Budget
 
 | State | Cost |
 |---|---|
 | Idle (no browser) | ~100 tokens (this file only) |
-| Browser task | ~450 tokens (this + preflight + cleanup) |
-| All preloaded (old way) | ~800+ tokens |
+| Browser task | ~830 tokens (this + route-discovery + preflight + tab-mgr + cleanup) |
+| All preloaded (old way) | ~1200+ tokens |

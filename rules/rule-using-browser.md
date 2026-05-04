@@ -8,14 +8,24 @@ description: Full browser session management. Only loaded when browser task is t
 
 ## EXECUTION PROTOCOL
 
+### Phase 0: Route Discovery (BEFORE planning)
+1. Run `skills/browser-route-discovery/SKILL.md` — read project route files
+2. Build a Route Map of all valid URLs
+3. Discover dev server port (check running processes + config)
+4. **NEVER plan browser steps with guessed/assumed URLs**
+
 ### Phase 1: Pre-Flight (BEFORE browser launch)
 1. Run `skills/browser-preflight/SKILL.md` checks
 2. If ANY check fails → STOP, warn user
-3. Plan milestones: split task into chunks of **≤ 10 browser steps**
+3. Load `skills/browser-tab-manager/SKILL.md` — include tab management rules in task prompt
+4. Validate ALL planned URLs against Route Map from Phase 0
+5. Plan milestones: split task into chunks of **≤ 10 browser steps**
 
 ### Phase 2: Milestone Execution
+- Include **Tab Management Rules** in EVERY Browser Subagent task prompt (see `skills/browser-tab-manager/SKILL.md`)
+- Before navigating → check if URL already open, reuse tab if so
 - Execute ≤ 10 browser steps per milestone
-- At milestone end → Browser Subagent MUST return
+- At milestone end → close stale tabs, then Browser Subagent MUST return
 - Summarize results → run cleanup → start next milestone
 
 ### Phase 3: Post-Session (AFTER browser returns)
@@ -36,3 +46,6 @@ After cleanup completes:
 - NEVER delete `~/.gemini/antigravity` directory itself
 - NEVER retry browser without cleanup first
 - ALWAYS summarize BEFORE deleting artifacts
+- NEVER navigate to a URL without reading project routes first
+- NEVER guess URLs — always validate against Route Map
+- If 404 encountered → re-run Route Discovery, do NOT keep guessing

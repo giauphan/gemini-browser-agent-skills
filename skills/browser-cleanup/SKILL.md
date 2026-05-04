@@ -60,6 +60,94 @@ rm -f "$CONV_DIR"/.system_generated/click_feedback/*.png 2>/dev/null || true
 echo "✅ Screenshots and temp media cleaned"
 ```
 
+## Step 4.5: Compress DOM → Summary → Then Delete
+
+> **CRITICAL**: Do NOT delete DOM files blindly. First extract useful context, save as text summary, THEN delete raw files. This preserves memory for conversation continuity.
+
+### 4.5a: Extract Context from DOM Files
+
+Before deleting, the AI agent MUST:
+
+1. **Scan DOM files** in the conversation directory
+2. **Extract key information** from each DOM file:
+   - Page title (`<title>`)
+   - Current URL
+   - Key visible text content (headings, form labels, error messages, data tables)
+   - Page state (logged in? which page? any errors?)
+   - Form values, selected options, visible data
+3. **Write a compressed summary** to `browser_context.md`
+
+```bash
+CONV_DIR=~/.gemini/antigravity/brain/<CONVERSATION_ID>
+CONTEXT_FILE="$CONV_DIR/browser_context.md"
+
+echo "=== Compressing DOM Context ==="
+
+# Count DOM files before cleanup
+DOM_COUNT=$(find "$CONV_DIR" \( -name "*dom*" -o -name "*.mhtml" -o -name "*_snapshot*" -o -name "*page_source*" -o -name "*_content.html" \) 2>/dev/null | wc -l)
+echo "DOM files found: $DOM_COUNT"
+
+# Extract titles and URLs from HTML files (lightweight extraction)
+echo "--- Extracting page context ---"
+{
+  echo "# Browser Context Summary"
+  echo ""
+  echo "Generated: $(date -Iseconds)"
+  echo "DOM files compressed: $DOM_COUNT"
+  echo ""
+  echo "## Pages Visited"
+  echo ""
+  # Extract <title> from any HTML/MHTML files
+  for f in $(find "$CONV_DIR" \( -name "*dom*" -o -name "*.mhtml" -o -name "*_content.html" \) 2>/dev/null | head -10); do
+    TITLE=$(grep -oP '(?<=<title>)[^<]+' "$f" 2>/dev/null | head -1)
+    URL=$(grep -oP '(?<=url=")[^"]+|(?<=href=")[^"]+' "$f" 2>/dev/null | head -1)
+    [ -n "$TITLE" ] && echo "- **$TITLE** — \`$URL\`"
+  done
+  echo ""
+  echo "## Key Context"
+  echo ""
+  echo "_AI agent: Fill in key findings from browser session below_"
+  echo ""
+} > "$CONTEXT_FILE" 2>/dev/null
+
+echo "✅ Context saved to browser_context.md"
+```
+
+### 4.5b: AI Agent Enriches the Summary
+
+After running the bash extraction, the AI agent MUST:
+
+1. **Read** `browser_context.md`
+2. **Append** key findings from the browser session:
+   - What was accomplished
+   - Current page state
+   - Any data collected (table rows, form values, search results)
+   - Next steps or pending actions
+   - Error messages encountered
+3. This file persists across the conversation and serves as **browser memory**
+
+### 4.5c: Delete Raw DOM Files
+
+**Only AFTER** the summary is written:
+
+```bash
+CONV_DIR=~/.gemini/antigravity/brain/<CONVERSATION_ID>
+echo "=== Deleting raw DOM files ==="
+# Delete DOM snapshot HTML files
+find "$CONV_DIR" -name "*dom*" ! -name "browser_context.md" -delete 2>/dev/null || true
+find "$CONV_DIR" -name "*.mhtml" -delete 2>/dev/null || true
+# Delete DOM JSON dumps
+find "$CONV_DIR" -name "*_dom.json" -delete 2>/dev/null || true
+find "$CONV_DIR" -name "*_snapshot*" -delete 2>/dev/null || true
+# Delete page source dumps
+find "$CONV_DIR" -name "*page_source*" -delete 2>/dev/null || true
+find "$CONV_DIR" -name "*_content.html" -delete 2>/dev/null || true
+# Delete .system_generated DOM dirs
+rm -rf "$CONV_DIR"/.system_generated/dom_snapshots/ 2>/dev/null || true
+rm -rf "$CONV_DIR"/.system_generated/page_content/ 2>/dev/null || true
+echo "✅ Raw DOM files deleted (summary preserved)"
+```
+
 ## Step 5: Context Compression
 
 After cleanup, state:
@@ -68,8 +156,13 @@ After cleanup, state:
 - [finding 1]
 - [finding 2]
 - [finding 3]
+📄 Full context saved to: browser_context.md
 ```
-Do NOT reference deleted artifacts in future responses.
+
+**For continuing conversations**: Read `browser_context.md` in the conversation directory to recover browser state from previous sessions.
+
+Do NOT reference deleted artifacts (screenshots, recordings, raw DOM) in future responses.
+Use `browser_context.md` as the ONLY source of browser memory.
 
 ## Step 6: Report
 
