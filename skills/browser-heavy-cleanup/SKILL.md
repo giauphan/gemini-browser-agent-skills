@@ -65,6 +65,19 @@ find ~/.gemini/antigravity/brain -type d -name "click_feedback" -exec rm -rf {} 
 echo "Done. Remaining PNGs: $(find ~/.gemini/antigravity/brain -name '*.png' 2>/dev/null | wc -l)"
 ```
 
+## Step 3.5: Clean Loop Breaker & Checkpoint Tracking Files
+
+```bash
+echo "=== Removing tracking files ==="
+# Delete action history logs (from browser-loop-breaker)
+find ~/.gemini/antigravity/brain -name "action_history.jsonl" -delete 2>/dev/null
+# Delete checkpoint state files (from browser-checkpoint-manager)
+find ~/.gemini/antigravity/brain -name "checkpoint_state.md" -delete 2>/dev/null
+# Delete DOM state directories
+find ~/.gemini/antigravity/brain -type d -name "dom_states" -exec rm -rf {} + 2>/dev/null
+echo "✅ Tracking files cleaned"
+```
+
 ## Step 4: Clear Browser Caches
 
 ```bash

@@ -1,6 +1,8 @@
 # 🧹 Gemini Browser Agent Skills
 
-> Drop-in skills, rules, and **dynamic context routing** to prevent **memory leaks**, **disk bloat (12GB+)**, **IDE crashes**, and **AI context amnesia** caused by Browser Subagent in AI IDEs.
+> Drop-in skills, rules, and **dynamic context routing** to prevent **memory leaks**, **disk bloat (12GB+)**, **IDE crashes**, **AI context amnesia**, and **long-horizon loop failures** caused by Browser Subagent in AI IDEs.
+>
+> 🧠 Now with **GUI-R1 Self-Reflection**, **RLVR Loop Breaker**, and **Checkpoint Manager** for reliable 30+ step browser automation.
 
 ## ⚠️ The Problem
 
@@ -13,6 +15,8 @@ When using AI agents for long-running tasks, these critical issues emerge:
 | **Context Amnesia** 🧠 | AI "forgets" rules as conversation grows longer | Rule violations, broken code |
 | **Token Waste** 💸 | Loading ALL rules into every message bloats context window | Slow responses, high cost |
 | **File Reading Skips** 📂 | AI reads 1-4 files when asked to read 10 | Incomplete analysis |
+| **Long-Horizon Loop** 🔄 | AI repeats failed action infinitely at step 30+ | 100% test failure |
+| **Cascade Failure** 💥 | One failed step corrupts ALL subsequent steps | Wasted resources |
 
 ## 💡 The Solution: Dynamic Context Routing
 
@@ -131,8 +135,22 @@ your-project/
 │   │   └── SKILL.md                # Pre-flight: RAM, disk, zombie check
 │   ├── browser-cleanup/
 │   │   └── SKILL.md                # Post-session: delete, kill, clean
-│   └── browser-heavy-cleanup/
-│       └── SKILL.md                # Nuclear: purge everything
+│   ├── browser-heavy-cleanup/
+│   │   └── SKILL.md                # Nuclear: purge everything
+│   ├── browser-observe-then-act/  # 🎯 PRIMARY: 2-Agent Pattern
+│   │   └── SKILL.md                # Observe/Act split (root cause fix)
+│   ├── browser-anti-loop/         # 🛡️ Visual verification prompts
+│   │   └── SKILL.md                # Screenshot trust + blocker detection
+│   ├── browser-self-reflection/    # 🧠 GUI-R1 Protocol
+│   │   └── SKILL.md                # <THINK>/<VERIFY> reasoning layer
+│   ├── browser-loop-breaker/       # 🔄 RLVR Protocol
+│   │   └── SKILL.md                # Action tracking & loop detection
+│   ├── browser-checkpoint-manager/ # 📍 Hierarchical Planning
+│   │   └── SKILL.md                # Manager-Worker checkpoint system
+│   └── browser-tab-manager/
+│       └── SKILL.md                # Tab dedup & cleanup
+├── scripts/
+│   └── loop_guard.sh               # 🔧 Runtime loop detection (executable)
 ├── examples/
 │   └── error_hinting.py            # Zero-token AI hint examples
 └── tests/
@@ -235,6 +253,44 @@ This "Chain-of-Thought Anchoring" technique dramatically reduces rule violations
 - Delete ALL recordings + screenshots
 - Purge Playwright caches
 - Full resource report
+
+### 🎯 `browser-observe-then-act` — 2-Agent Pattern (PRIMARY FIX)
+- **Root cause fix**: Splits browser work into 2 separate agents
+- Browser subagent = **hands** (capture DOM/screenshot + execute precise clicks)
+- Outer AI = **brain** (analyze page state, decide what to click)
+- OBSERVE call → outer AI analyzes → ACT call → outer AI verifies
+- Eliminates loops because outer AI controls each step as circuit breaker
+- Based on Stagehand `observe()`/`act()` + Browser-Use dual-phase pattern
+
+### 🛡️ `browser-anti-loop` — Visual Verification Prompts
+- Forces browser subagent to trust SCREENSHOT over HTML/DOM
+- Pre-click blocker detection (popups, overlays, banners)
+- State change proof required after each action
+- Escape-first recovery protocol (Escape → Scroll → Click empty → Refresh)
+
+### 🧠 `browser-self-reflection` — GUI-R1 Reasoning Layer
+- Forces `<THINK>` before every action (plan, predict outcome)
+- Forces `<VERIFY>` after every action (compare expected vs actual)
+- `<RECOVER>` protocol when action fails (diagnose + adapt)
+- `<WORKING_MEMORY>` summary every 5 steps (prevents context rot)
+
+### 🔄 `browser-loop-breaker` — RLVR Loop Detection
+- Tracks action history in `action_history.jsonl`
+- Detects repeated actions on same element (3+ times = loop)
+- Verifies DOM state change after each action (World Model)
+- `[AI_SYSTEM_HINT]` auto-triggers on loop detection
+
+### 📍 `browser-checkpoint-manager` — Hierarchical Planning
+- Splits 30+ step tasks into ≤10-step checkpoints
+- Manager-Worker architecture (Manager plans, Worker executes)
+- Isolated failure recovery (retry one checkpoint, not entire test)
+- Checkpoint state tracking in `checkpoint_state.md`
+
+### 🔧 `scripts/loop_guard.sh` — Runtime Loop Detection
+- Executable bash script running between browser_subagent calls
+- Code-level loop detection (not just prompt instructions)
+- Emits `[AI_SYSTEM_HINT]` that AI reads from terminal output
+- Tracks action history, detects repeated patterns, forces strategy change
 
 ## 🔗 Related Projects & Resources
 
