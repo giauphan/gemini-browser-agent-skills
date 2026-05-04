@@ -10,6 +10,9 @@
 3. ALWAYS delete `.webp` recordings after browser sessions
 4. ALWAYS verify file reading: state `"Read X/Y files"` before proceeding
 5. NEVER delete entire `~/.gemini/antigravity` directory
+6. **ALWAYS** use Observe-Then-Act: browser subagent = hands, outer AI = brain
+7. **NEVER** put both "find element" AND "click element" in one browser_subagent call
+8. **NEVER** attempt same browser action more than 3 times — switch strategy
 
 ## ROUTING TABLE (On-Demand Loading)
 
@@ -19,6 +22,10 @@
 | After browser returns | `skills/browser-cleanup/SKILL.md` |
 | Disk > 10GB or "clean" | `skills/browser-heavy-cleanup/SKILL.md` |
 | Any browser task | `rules/rule-using-browser.md` |
+| **Any browser task** (2-agent) | `skills/browser-observe-then-act/SKILL.md` |
+| **Any browser task** (anti-loop) | `skills/browser-anti-loop/SKILL.md` |
+| Task > 10 steps | `skills/browser-self-reflection/SKILL.md` |
+| Action repeated 2+ times | `skills/browser-loop-breaker/SKILL.md` |
 | Before writing code | `rules/self-check.md` |
 
 ## SELF-CHECK (Before Every Action)
@@ -37,4 +44,5 @@ After cleanup: `🗜️ Browser context compressed. Key findings: [3-5 bullets]`
 
 - `[AI_SYSTEM_HINT]` in terminal → follow immediately
 - Browser fails → load `skills/browser-cleanup/SKILL.md` BEFORE retry
+- Action repeated 3 times → STOP, load `skills/browser-loop-breaker/SKILL.md`, change strategy
 - >15 messages → re-read routing table

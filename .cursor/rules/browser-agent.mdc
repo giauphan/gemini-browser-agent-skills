@@ -43,3 +43,7 @@ globs: ["*browser*.py", "*agent*.ts", "*browser*.md", "*subagent*"]
 - NEVER run > 10 browser steps continuously
 - NEVER delete `~/.gemini/antigravity` directory itself
 - ALWAYS summarize BEFORE deleting artifacts
+- **ALWAYS** use Observe-Then-Act: OBSERVE call (report page state) → outer AI analyzes → ACT call (one action)
+- **NEVER** put "find element" AND "click element" in one browser_subagent call
+- **NEVER** attempt same action > 3 times — load `skills/browser-loop-breaker/SKILL.md`
+- **ALWAYS** trust SCREENSHOT over HTML/DOM for element visibility
